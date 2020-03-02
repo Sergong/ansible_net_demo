@@ -1,0 +1,38 @@
+layer3_data:
+  spine01:
+    - { name: lo, ipv4: 10.0.0.1/32 }
+    - { name: eth1, ipv4: 10.10.5.1/30 }
+    - { name: eth5, ipv4: 172.16.2.1/30 }
+  leaf01:
+    - { name: lo, ipv4: 10.0.0.11/32 }
+    - { name: eth1, ipv4: 10.10.10.1/30 }
+    - { name: eth5, ipv4: 10.10.5.2/30 }
+  csr01:
+    - { name: Loopback1,  ipv4: 172.16.0.1/32 }
+    - { name: GigabitEthernet2, ipv4: 172.16.2.2/30 }
+    - { name: GigabitEthernet4, ipv4: 172.16.10.1/30 }
+
+interface_data:
+  csr01:
+    GigabitEthernet1:
+      description: management
+    GigabitEthernet2:
+      description: outside
+    GigabitEthernet4:
+      description: inside
+
+  spine01:
+    eth0:
+      description: management
+    eth1:
+      description: internal
+    eth5:
+      description: outside
+
+  leaf01:
+    eth0:
+      description: management
+    eth1:
+      description: server01
+    eth5:
+      description: uplink

@@ -1,0 +1,183 @@
+Building configuration...
+
+Current configuration : 1978 bytes
+!
+! Last configuration change at 22:35:05 UTC Sat Feb 1 2020
+!
+version 16.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+platform console virtual
+!
+hostname csr01
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password 7 13061E010803557878
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip domain name example.com
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+! 
+! 
+! 
+! 
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+license udi pid CSR1000V sn 9RVYSN0WEWG
+diagnostic bootup level minimal
+spanning-tree extend system-id
+!
+!
+!
+username admin password 7 1404061E0801243F
+!
+redundancy
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface GigabitEthernet1
+ ip address dhcp
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet2
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet3
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet4
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet5
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+!
+virtual-service csr_mgmt
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+line con 0
+ stopbits 1
+line vty 0
+ password 7 104D000A061843595F
+ login local
+ transport input ssh
+ transport output ssh
+line vty 1
+ password 7 104D000A061843595F
+ login local
+ length 0
+ transport input ssh
+ transport output ssh
+line vty 2 4
+ password 7 104D000A061843595F
+ login local
+ transport input ssh
+ transport output ssh
+line vty 5 15
+ login local
+ transport input ssh
+ transport output ssh
+!
+!
+!
+!
+!
+!
+end

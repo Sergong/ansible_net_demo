@@ -1,0 +1,20 @@
+set interfaces ethernet eth0 address 'dhcp'[m
+set interfaces ethernet eth0 hw-id '52:54:00:6b:3e:4e'[m
+set interfaces ethernet eth1 hw-id '52:54:00:d9:0f:b8'[m
+set interfaces ethernet eth2 hw-id '52:54:00:35:b8:e6'[m
+set interfaces ethernet eth3 hw-id '52:54:00:a7:55:33'[m
+set interfaces ethernet eth4 hw-id '52:54:00:2e:4c:9b'[m
+set interfaces ethernet eth5 hw-id '52:54:00:b3:ae:90'[m
+set interfaces loopback lo[m
+set service ssh[m
+set system config-management commit-revisions '100'[m
+set system console device ttyS0 speed '115200'[m
+set system host-name 'vyos'[m
+set system login user vyos authentication encrypted-password '$6$UVtf7O/8Z6S$Tb7JFcx58xtk1b08flRGHMprwztHVDYL3AH7K9xWxx5ZkyO041AwjegVbLb3AeZz7UWynfolu3LuOQ3/hK/1Z0'[m
+set system login user vyos authentication plaintext-password ''[m
+set system login user vyos level 'admin'[m
+set system ntp server 0.pool.ntp.org[m
+set system ntp server 1.pool.ntp.org[m
+set system ntp server 2.pool.ntp.org[m
+set system syslog global facility all level 'info'[m
+set system syslog global facility protocols level 'debug'[m

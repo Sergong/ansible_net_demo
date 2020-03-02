@@ -1,0 +1,20 @@
+---
+- name: >
+    play for ios devices
+    that uses ios_facts
+  hosts: ios
+  gather_facts: false
+
+  tasks:
+    - name: look at some facts
+      ios_facts:
+        gather_subset:
+          - hardware
+
+    - name: show results
+      debug:
+        msg:
+          - "filesystems: {{ ansible_net_filesystems }}"
+          - "free mem MB: {{ ansible_net_memfree_mb }}"
+          - "mem total MB: {{ ansible_net_memtotal_mb }}"
+

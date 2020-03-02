@@ -1,0 +1,15 @@
+---
+- name: back up network device configurations
+  hosts: network
+
+  tasks:
+    - name: backup config of vyos device
+      vyos_config:
+        backup: true
+      when: ansible_network_os == 'vyos'
+
+    - name: backup config of ios device
+      ios_config:
+        backup: true
+      when: ansible_network_os == 'ios'
+

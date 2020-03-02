@@ -1,0 +1,8 @@
+hostname {{ inventory_hostname }}
+ip domain-name {{ domain_name }}
+{% for nameserver in nameservers %}
+ip name-server {{ nameserver }} 
+{% endfor %}
+access-list 1 permit {{ workstation_ipv4 | ipaddr('address') }} log 
+access-list 1 permit {{ tower_ipv4 | ipaddr('address') }} log
+snmp-server community {{ ro_community }} RO 1

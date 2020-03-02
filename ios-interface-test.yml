@@ -1,0 +1,21 @@
+---
+- name: show the target interface but only if its UP
+  hosts: ios
+  gather_facts: false
+  vars:
+    target_interface: GigabitEthernet4
+
+  tasks:
+    - name: Gather the facts
+      ios_facts:
+        gather_subset: all
+      when: ansible_network_os == 'ios'
+
+    - name: display the interfaces
+      debug:
+        msg: "{{ item }}"
+      with_dict: "{{ ansible_net_interfaces }}"
+      when:
+        - item.key == target_interface
+        - item.value['operstatus'] == 'administratively down'
+

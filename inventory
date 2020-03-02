@@ -1,0 +1,33 @@
+
+[spines]
+spine01 ansible_host=192.168.122.61
+spine02 ansible_host=192.168.122.33
+
+[leafs]
+leaf01 ansible_host=192.168.122.160
+leaf02 ansible_host=192.168.122.95
+
+[cloud_service]
+csr01 ansible_host=192.168.122.223
+
+[border_routers] 
+spine01
+spine02
+cs01
+
+[access_layer] 
+leaf01
+leaf02
+csr01
+
+[ios:children]
+cloud_service
+
+[vyos:children]
+spines
+leafs
+
+[network:children]
+ios
+vyos
+

@@ -1,0 +1,20 @@
+---
+- name: configure devices using j2 templates
+  hosts: network
+  vars:
+    vyos_template: j2/vyos-config.j2 
+    ios_template: j2/ios-config.j2
+
+  tasks:
+    - name: VyOS configure {{ inventory_hostname }} 
+      vyos_config:
+        src: "{{ vyos_template }}"
+        save: true
+      when: ansible_network_os == 'vyos'
+
+    - name: IOS configure {{ inventory_hostname }} 
+      ios_config:
+        src: "{{ ios_template }}"
+        save_when: modified
+      when: ansible_network_os == 'ios'
+

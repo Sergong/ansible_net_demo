@@ -1,0 +1,34 @@
+---
+- name: bounce and interface (shut/no shut)
+  # requires extra vars to be passed along at invocation: target, intf
+  hosts: "{{ target }}"
+
+  tasks:
+    - name: shut interface {{ intf }} on a VyOS device
+      vyos_interface:
+        name: "{{ intf }}"
+        enabled: false
+      when: target in groups['vyos']
+
+    - name: shut interface {{ intf }} on a IOS device
+      ios_interface:
+        name: "{{ intf }}"
+        enabled: false
+      when: target in groups['ios']
+
+    - name: pause briefly before enabling interfaces
+      pause:
+        seconds: 1
+
+    - name: enable interface {{ intf }} on a VyOS device
+      vyos_interface:
+        name: "{{ intf }}"
+        enabled: true
+      when: target in groups['vyos']
+
+    - name: enable interface {{ intf }} on a IOS device
+      ios_interface:
+        name: "{{ intf }}"
+        enabled: true
+      when: target in groups['ios']
+

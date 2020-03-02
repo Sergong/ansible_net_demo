@@ -1,0 +1,15 @@
+---
+- name: Testing dictionary data for interface naming
+  hosts: spine01
+
+  vars_files:
+    - vars/expansion-data.yml
+
+  tasks:
+    - name: test Interface Name and label
+      debug:
+        msg: |
+          "Interface: {{ item.key }}"
+          "Description: {{ item.value.description }}"
+      with_dict: "{{  interface_data[inventory_hostname] }}"
+

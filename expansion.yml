@@ -1,0 +1,162 @@
+---
+- name: configure csr01 for expansion 
+  hosts: csr01
+  vars_files:
+    - vars/expansion-data.yml 
+  
+  tasks:
+    - name: label all the {{ inventory_hostname }} interfaces
+      ios_interface:
+        name: "{{ item.key }}"
+        description: "{{ item.value.description }}"
+      with_dict: "{{ interface_data[inventory_hostname] }}"
+
+    - name: configure layer3 interfaces
+      ios_l3_interface:
+        aggregate: "{{ layer3_data[inventory_hostname] }}"
+
+    - name: bring the outside interface up
+      ios_interface:
+        name: GigabitEthernet2
+        enabled: yes
+
+- name: configure spine01 for expansion
+  hosts: spine01
+  vars_files:
+    - vars/expansion-data.yml 
+ 
+  tasks:
+    - name: make sure ospf is not enabled
+      vyos_config:
+        lines:
+          - delete protocols ospf
+
+    - name: "label all the {{ inventory_hostname }} interfaces"
+      vyos_interface:
+        name: "{{ item.key }}"
+        description: "{{ item.value.description }}"
+      with_dict: "{{ interface_data[inventory_hostname] }}"
+
+# The following 2 tasks are the correct way to configure L3 interfaces however they don't work because of bug
+#    - name: configure layer3
+#      vyos_l3_interface:
+#        aggregate: "{{ layer3_data[inventory_hostname] }}"
+
+#    - name: configure layer3
+#      vyos_l3_interfaces:
+#        config:
+#          - name: "{{ item['name'] }}"
+#            ipv4:
+#              - address: "{{ item['ipv4'] }}"
+#        state: replaced
+#      loop: "{{  layer3_data[inventory_hostname] }}"
+
+# the following is just a workaround but still idempotent!...
+# note that the vyos_config alternative is NOT idempotent!!
+
+    - name: configure layer3 (alternative)
+      vyos_command:
+        commands:
+          - configure
+          - "set interfaces ethernet {{ item.name }} address {{ item.ipv4 }}"
+          - commit
+          - save
+      when: item.name != 'lo'
+      loop: "{{  layer3_data[inventory_hostname] }}"
+
+    - name: configure layer3 (alternative) for loopback interface
+      vyos_command:
+        commands:
+          - configure
+          - "set interfaces loopback {{ item.name }} address {{ item.ipv4 }}"
+          - commit
+          - save
+      when: item.name == 'lo'
+      loop: "{{  layer3_data[inventory_hostname] }}"
+
+# -- end work-around tasks
+
+# the following is not idempotent!
+#    - name: set default gateway
+#      vyos_static_route:
+#        prefix: 0.0.0.0/0
+#        next_hop: 172.16.2.2
+#
+#    - name: add static route for server subnet
+#      vyos_static_route:
+#        prefix: 10.10.10.0/30
+#        next_hop: 10.10.5.2
+
+    - name: configure default gateway
+      vyos_command:
+        commands:
+          - configure
+          - set protocols static route 0.0.0.0/0 next-hop 172.16.2.2
+          - commit
+          - save
+
+    - name: add static route for server subnet
+      vyos_command:
+        commands:
+          - configure
+          - set protocols static route 10.10.10.0/30 next-hop 10.10.5.2
+          - commit
+          - save
+
+- name: a play that configures leaf01 this is the expansion model
+  hosts: leaf01
+  vars_files:
+    - vars/expansion-data.yml 
+
+  tasks:
+    - name: label all the {{ inventory_hostname }} interfaces
+      vyos_interface:
+        name: "{{ item.key }}"
+        description: "{{ item.value.description }}"
+      with_dict: "{{ interface_data[inventory_hostname] }}"
+
+# Unfortunately the following doesn't work in ansible 2.9...
+#    - name: configure layer3 interfaces
+#      vyos_l3_interface:
+#        aggregate: "{{ layer3_data[inventory_hostname] }}"
+
+# the following is just a workaround but still idempotent!...
+# note that the vyos_config alternative is NOT idempotent!!
+#
+    - name: configure layer3 (alternative)
+      vyos_command:
+        commands:
+          - configure
+          - "set interfaces ethernet {{ item.name }} address {{ item.ipv4 }}"
+          - commit
+          - save
+      when: item.name != 'lo'
+      loop: "{{  layer3_data[inventory_hostname] }}"
+
+    - name: configure layer3 (alternative) for loopback interface
+      vyos_command:
+        commands:
+          - configure
+          - "set interfaces loopback {{ item.name }} address {{ item.ipv4 }}"
+          - commit
+          - save
+      when: item.name == 'lo'
+      loop: "{{  layer3_data[inventory_hostname] }}"
+
+# -- end work-around tasks
+
+# the following is not idempotent!
+#    - name: set default gateway
+#      vyos_static_route:
+#        prefix: 0.0.0.0/0
+#        next_hop: 10.10.5.1
+
+    - name: configure default gateway
+      vyos_command:
+        commands:
+          - configure
+          - set protocols static route 0.0.0.0/0 next-hop 10.10.5.1
+          - commit
+          - save
+
+
